@@ -31,7 +31,7 @@
       for (var i = 0; i < palabras.length; i++) {
         for (var ii = 0; ii < listaAnterior.length; ii++) {
           var punto = document.createElement("li");
-          var contenido = document.createTextNode(palabras[i]+listaAnterior[ii]);
+          var contenido = document.createTextNode(palabras[i].toString()+listaAnterior[ii].toString());
           punto.appendChild(contenido);
           nuevaLista.appendChild(punto);
         }
@@ -48,7 +48,7 @@
       for (var i = 0; i < palabras.length; i++) {
         // Hacemos un punto HTML por elemento
         var punto = document.createElement("li");
-        var contenido = document.createTextNode(palabras[i]);
+        var contenido = document.createTextNode(palabras[i].toString());
         punto.appendChild(contenido);
         laLista.appendChild(punto); // Lo añadimos a la lista
       };
