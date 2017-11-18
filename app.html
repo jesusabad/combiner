@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <script>
+    function combinacion(palabras, lista) {
+      // Paramos la combinacion si llegamos a una lista de nivel superior
+      // al número de palabras, aunque puede ser mayor.
+      if (lista.length-7 > palabras.length-1) {
+        return false;
+      }
+      // Tomamos los puntos de la lista anterior
+      var nombreAnterior = lista.slice(0, -1);
+      var laLista = document.getElementById(nombreAnterior);
+      var laListaAnterior = laLista.childNodes;
+      var listaAnterior = [];
+      for (var i = 0; i < laListaAnterior.length; i++) {
+        listaAnterior.push(laListaAnterior[i].innerHTML);
+      }
+      // Creamos la nueva lista en HTML
+      var nuevaLista = document.createElement("ul");
+      var identificador = document.createAttribute("id");
+      identificador.value = lista;
+      nuevaLista.setAttributeNode(identificador);
+      laLista.appendChild(nuevaLista);
+
+      // Combinamos las palabras con la lista anterior
+      for (var i = 0; i < palabras.length; i++) {
+        for (var ii = 0; ii < listaAnterior.length; ii++) {
+          var punto = document.createElement("li");
+          var contenido = document.createTextNode(palabras[i]+listaAnterior[ii]);
+          punto.appendChild(contenido);
+          nuevaLista.appendChild(punto);
+        }
+      };
+      lista += 1; // Creamos el nombre de la lista siguiente
+      combinacion(palabras, lista);
+      return false;
+    }
+
+    function iniciarCombinacion(palabras, lista) {
+      // Trabajaremos en la lista HTML
+      var laLista = document.getElementById(lista);
+      // Creamos la primera "combinación" que es una lista sencilla
+      for (var i = 0; i < palabras.length; i++) {
+        // Hacemos un punto HTML por elemento
+        var punto = document.createElement("li");
+        var contenido = document.createTextNode(palabras[i]);
+        punto.appendChild(contenido);
+        laLista.appendChild(punto); // Lo añadimos a la lista
+      };
+      lista += 1; // Creamos el nombre de la lista siguiente
+      combinacion(palabras, lista);
+      return false;
+    }
+
+    function formulario() {
+      var palabras = "";
+      var lista = "miLista"; // Nombre de la lista inicial (7 letras)
+      var lasPalabras = document.getElementById('misPalabras');
+      palabras = lasPalabras.value;
+      if (palabras === "") {
+        alert("Debes escribir alguna palabra");
+        return false;
+      } else {
+        var palabrasSeparadas = palabras.split(" "); // Pasa a ser array
+        iniciarCombinacion(palabrasSeparadas, lista);
+      }
+    }
+  </script>
+
+  <title>Generar combinación</title>
+</head>
+
+<body>
+  <form>
+    <h2>Lista de palabras, cada una separada por espacios:</h2>
+    <input type="text" id="misPalabras" value="La Frase Que Queremos Combinar" size="50">
+    <input type="button" value="Enviar" onclick="formulario()">
+  </form>
+  <div>
+    <h2>Listado:</h2>
+    <ul id="miLista"></ul>
+  </div>
+</body>
+
+</html>
