@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <script>
+    function guardarArchivo(palabras, listaAnterior) {
+      var texto = "";
+      for (var i = "miLista"; i.length < listaAnterior.length + 1; i += 1) {
+        for (var ii = 0; ii < palabras[i].length; ii++) {
+          texto += palabras[i][ii] + "\n";
+        }
+      }
+
+      var saveData = (function() {
+        var laA = document.createElement("a");
+        document.body.appendChild(laA);
+        laA.style = "display: none";
+        return function() {
+          var salida = new File([texto], "palabras.txt");
+          url = window.URL.createObjectURL(salida);
+          laA.href = url;
+          laA.download = salida.name;
+          laA.click();
+          window.URL.revokeObjectURL(url);
+        };
+      }());
+      saveData();
+    }
+
+    function combinacionRepeticion(palabras, lista) {
+      // Definimos el nombre de la lista anterior
+      var listaAnterior = lista.slice(0, -1);
+
+      // Paramos la combinacion si llegamos a una lista de nivel superior
+      // al número de palabras, aunque puede ser mayor.
+      if (lista.length - 7 > palabras["miLista"].length - 1) {
+        // Mandaremos el listado a un archivo de texto
+        guardarArchivo(palabras, listaAnterior);
+        return false;
+      }
+
+      // Combinamos las palabras con la lista anterior
+      palabras[lista] = []; // Definimos la lista actual como un Array
+      for (var i = 0; i < palabras["miLista"].length; i++) {
+        for (var ii = 0; ii < palabras[listaAnterior].length; ii++) {
+          palabras[lista].push(palabras["miLista"][i].toString() + palabras[listaAnterior][ii].toString());
+        }
+      }
+      lista += 1; // Creamos el nombre de la lista siguiente
+      combinacionRepeticion(palabras, lista);
+      return false;
+    }
+
+    function combinacionSinRepeticion(palabras, lista) {
+      // Definimos el nombre de la lista anterior
+      var listaAnterior = lista.slice(0, -1);
+
+      // Paramos la combinacion si llegamos a una lista de nivel superior
+      // al número de palabras, aunque puede ser mayor.
+      if (lista.length - 7 > palabras["miLista"].length - 1) {
+        // Mandaremos el listado a un archivo de texto
+        guardarArchivo(palabras, listaAnterior);
+        return false;
+      }
+
+      // Combinamos las palabras con la lista anterior
+      palabras[lista] = []; // Definimos la lista actual como un Array
+      for (var i = 0; i < palabras["miLista"].length; i++) {
+        for (var ii = 0; ii < palabras[listaAnterior].length; ii++) {
+          palabras[lista].push(palabras["miLista"][i].toString() + palabras[listaAnterior][ii].toString());
+        }
+      }
+      // Eliminamos las combinaciones con repetición
+      for (var i = palabras[lista].length - 1; i >= 0; i--) {
+        for (var ii = 0; ii < palabras["miLista"].length; ii++) {
+          if (palabras[lista][i].indexOf(palabras["miLista"][ii]) !== palabras[lista][i].lastIndexOf(palabras["miLista"][ii])) {
+            palabras[lista].splice(i, 1); // La eliminamos
+          };
+        }
+      }
+      lista += 1; // Creamos el nombre de la lista siguiente
+      combinacionSinRepeticion(palabras, lista);
+      return false;
+    }
+
+    function formulario() {
+      var lista = "miLista"; // Nombre de la lista inicial (7 letras)
+      var lasPalabras = document.getElementById('misPalabras');
+      var laRepeticion = document.getElementById('miRepeticion');
+      if (lasPalabras.value === "") {
+        alert("Debes escribir alguna palabra");
+        return false;
+      } else {
+        var palabras = {}; // El objeto principal
+        palabras[lista] = lasPalabras.value.split(" "); // Se introduce el primer Array
+        lista += 1; // Creamos el nombre de la lista siguiente
+        if (laRepeticion.checked) {
+          combinacionRepeticion(palabras, lista);
+        } else {
+          combinacionSinRepeticion(palabras, lista);
+        }
+      }
+    }
+  </script>
+
+  <title>Generar combinación</title>
+</head>
+
+<body>
+  <form>
+    <h2>Lista de palabras, cada una separada por espacios:</h2>
+    <input type="text" id="misPalabras" value="1 2 3 4 5 6 7" size="50">
+    <input type="button" value="Enviar" onclick="formulario()"><br>
+    <input type="checkbox" id="miRepeticion" value="si" checked> Con repetición de palabras<br>
+  </form>
+</body>
+
+</html>
